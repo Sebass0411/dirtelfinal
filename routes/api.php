@@ -12,9 +12,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 Route::post('/user', [AuthController::class, 'user'])->middleware('auth:api');
 
-Route::middleware('role:admin')->group(function () {
-    Route::resource('users', UserController::class);
+Route::middleware(['auth:api', 'role:admin'])->group(function () {
+    Route::resource('users', UserController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
 });
 
-Route::middleware('auth:api')->resource('contacts', ContactController::class);
-
+Route::middleware('auth:api')->group(function () {
+    Route::resource('contacts', ContactController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+});
